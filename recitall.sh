@@ -15,6 +15,9 @@ PUBDIR="public" #Public directory inside every repo (no slashes). Leavy empty to
 
 #Do not edit below this line!
 
+#Name of the defined run-script (in composer.json) to run after composer update. Leave blank to not use it.
+COMPOSERSCRIPT=$1
+
 #Required to run
 command -v git >/dev/null 2>&1 || { echo >&2 "git is required for this updater to run. Please install it first: http://git-scm.com/"; exit 1; }
 command -v legit >/dev/null 2>&1 || { echo >&2 "legit extension for git is required for this updater to run. Please install it first. Ubuntu: sudo apt-get install legit. OSX (with homebrew): brew install legit. More info at: http://www.git-legit.org"; exit 1; }
@@ -39,6 +42,10 @@ for D in ./*; do
 
 			if [ -f composer.json ]; then
 				composer update
+
+				if [ ! -z "$COMPOSERSCRIPT" ]; then
+					composer run-script $COMPOSERSCRIPT
+				fi
 			fi
 
 			git add -A

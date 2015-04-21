@@ -28,6 +28,14 @@ Put your configured **resitall.sh** into the folder containing your git repos (a
 
 And watch ;)
 
+You can also pass an argument to the script. That argument should be a composer's run-script defined command. Check [composer documentation](https://getcomposer.org/doc/articles/scripts.md#running-scripts-manually) for info about it.
+
+```sh
+./resitall.sh wp-core
+```
+
+In this case the updater will execute *wp-core* as defined in composer.json script. It's useful to put a routine in there, for example, to update WordPress core directly from git, or any specific routine post update that should not run every time you mass update with ResitAll.
+
 ### Changelog
 v1.0.0 (2015-04-21)
 * First public release
