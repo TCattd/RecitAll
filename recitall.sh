@@ -49,7 +49,7 @@ for D in ./*; do
 			fi
 
 			git add -A
-			git commit -m "RecitAll audo-update"
+			git commit -m "RecitAll auto-update"
 			legit sync
 			echo -e '### '$D'/ done!\n\n';
 
