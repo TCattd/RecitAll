@@ -49,7 +49,11 @@ for D in ./*; do
 			fi
 
 			git add -A
-			git commit -m "RecitAll auto-update"
+				if [ ! -z "$COMPOSERSCRIPT" ]; then
+					git commit -m "RecitAll auto-update (run-script $COMPOSERSCRIPT)"
+				else
+					git commit -m "RecitAll auto-update"
+				fi
 			legit sync
 			echo -e '### '$D'/ done!\n\n';
 
