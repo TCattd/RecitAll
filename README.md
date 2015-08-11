@@ -11,11 +11,11 @@ RecitAll is a simple bash script to mass update several git repositories on your
 ### Background notes
 
 RecitAll expects that all your repos (the ones you want to mass update) live in the same path. It will check for every directory with an user defined prefix, for example **/site-**, and will cycle through them.
-RecitAll then optionally will *cd* into the public directory of the repo (user can define it too), before starting the update routine.
+RecitAll then will try to detect a composer.json config file in the project's root. If one is present, then it will be used to update. If not, then RecitAll optionally will *cd* into the public directory of the repo (user can define it too), before starting the update routine.
 
 You need to prepare your repo (and yourself) so your master branch is always ready for production. Every feature or bug fix should reside in a new branch, and not in the master branch. ResitAll will sync, update, commit and push the master branch without asking. Please, be careful with that!.
 
-We use this with our repos, mainly with WordPress instances using composer (thansk to [wpackagist.org](http://wpackagist.org)), to mass update plugins and WP version (with a custom composer's post-update script). Hassle-free :)
+We use this with our repos, mainly with WordPress instances using composer (thansk to [wpackagist.org](http://wpackagist.org)), to mass update WordPress's plugins and core (with some tweaks thanks to composer's post-update script support). Hassle-free :)
 
 ### Usage
 
@@ -37,6 +37,9 @@ You can also pass an argument to the script. That argument should be a composer'
 In this case the updater will execute *wp-core* as defined in composer.json script. It's useful to put a routine in there, for example, to update WordPress core directly from git, or any specific routine post update that should not run every time you mass update with ResitAll.
 
 ### Changelog
+v1.0.1 (2015-08-11)
+* Attempts to detect a root composer.json config file on every directory, and use it to update. If not, RecitAll goes like before, according the PUBDIR's value.
+
 v1.0.0 (2015-04-21)
 * First public release
 

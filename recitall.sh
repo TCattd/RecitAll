@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#RecitAll v1.0.0
+#RecitAll v1.0.1
 #A simple git/composer script for mass update repositories
 #Info and usage instructions at: https://github.com/TCattd/RecitAll
 #
@@ -11,7 +11,7 @@
 
 #Configuration:
 DIRSPREFIX="/site-" #Directories prefix (slash at the beginning). Will cycle through dirs with a name using that prefix. To cycle through all, use a single forward slash: /
-PUBDIR="public" #Public directory inside every repo (no slashes). Leavy empty to NOT cd into a subdirectory for every repo
+PUBDIR="" #Public directory inside every repo (no slashes). Leavy empty to NOT cd into a subdirectory for every repo
 
 #Do not edit below this line!
 
@@ -30,10 +30,16 @@ echo -e '### Starting RecitAll\n'
 for D in ./*; do
 	if [ -d "$D" ]; then
 		if([[ "$D" =~ $DIRSPREFIX ]]); then
-			if [ -z "$PUBDIR" ]; then
+
+			if [ -f "$D/composer.json" ]; then
+				#root composer.json found
 				cd "$D"
 			else
-				cd "$D/$PUBDIR/"
+				if [ -z "$PUBDIR" ]; then
+					cd "$D"
+				else
+					cd "$D/$PUBDIR/"
+				fi
 			fi
 
 			echo '### Updating '$D'/ ...';
@@ -57,11 +63,16 @@ for D in ./*; do
 			legit sync
 			echo -e '### '$D'/ done!\n\n';
 
-			if [ -z "$PUBDIR" ]; then
+			if [ -f "$D/composer.json" ]; then
 				cd ..
 			else
-				cd ../..
+				if [ -z "$PUBDIR" ]; then
+					cd ..
+				else
+					cd ../..
+				fi
 			fi
+
 		fi
 	fi
 done
