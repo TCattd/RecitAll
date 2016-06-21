@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#RecitAll v1.0.1
+#RecitAll v1.0.2
 #A simple git/composer script for mass update repositories
 #Info and usage instructions at: https://github.com/TCattd/RecitAll
 #
@@ -31,47 +31,53 @@ for D in ./*; do
 	if [ -d "$D" ]; then
 		if([[ "$D" =~ $DIRSPREFIX ]]); then
 
-			if [ -f "$D/composer.json" ]; then
-				#root composer.json found
-				cd "$D"
-			else
-				if [ -z "$PUBDIR" ]; then
+				if [ -f "$D/composer.json" ]; then
+					#root composer.json found
 					cd "$D"
 				else
-					cd "$D/$PUBDIR/"
+					if [ -z "$PUBDIR" ]; then
+						cd "$D"
+					else
+						cd "$D/$PUBDIR/"
+					fi
 				fi
-			fi
 
-			echo '### Updating '$D'/ ...';
-			git checkout master
-			legit sync
+				echo '### Updating '$D'/ ...';
 
-			if [ -f composer.json ]; then
-				composer update
-
-				if [ ! -z "$COMPOSERSCRIPT" ]; then
-					composer run-script $COMPOSERSCRIPT
+				if [ -d "$D/.git/" ]; then
+					git checkout master
+					legit sync
 				fi
-			fi
 
-			git add -A
-				if [ ! -z "$COMPOSERSCRIPT" ]; then
-					git commit -m "RecitAll auto-update (run-script $COMPOSERSCRIPT)"
-				else
-					git commit -m "RecitAll auto-update"
+				if [ -f composer.json ]; then
+					composer update
+
+					if [ ! -z "$COMPOSERSCRIPT" ]; then
+						composer run-script $COMPOSERSCRIPT
+					fi
 				fi
-			legit sync
-			echo -e '### '$D'/ done!\n\n';
 
-			if [ -f "$D/composer.json" ]; then
-				cd ..
-			else
-				if [ -z "$PUBDIR" ]; then
+				if [ -d "$D/.git/" ]; then
+					git add -A
+						if [ ! -z "$COMPOSERSCRIPT" ]; then
+							git commit -m "RecitAll auto-update (run-script $COMPOSERSCRIPT)"
+						else
+							git commit -m "RecitAll auto-update"
+						fi
+					legit sync
+				fi
+
+				echo -e '### '$D'/ done!\n\n';
+
+				if [ -f "$D/composer.json" ]; then
 					cd ..
 				else
-					cd ../..
+					if [ -z "$PUBDIR" ]; then
+						cd ..
+					else
+						cd ../..
+					fi
 				fi
-			fi
 
 		fi
 	fi
