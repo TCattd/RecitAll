@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#RecitAll v1.0.5
+#RecitAll v1.0.2
 #A simple git/composer script for mass update repositories
 #Info and usage instructions at: https://github.com/TCattd/RecitAll
 #

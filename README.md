@@ -37,6 +37,9 @@ You can also pass an argument to the script. That argument should be a composer'
 In this case the updater will execute *wp-core* as defined in composer.json script. It's useful to put a routine in there, for example, to update WordPress core directly from git, or any specific routine post update that should not run every time you mass update with ResitAll.
 
 ### Changelog
+v1.0.2 (2016-07-18)
+* Fix legit sync routine.
+
 v1.0.1 (2015-08-11)
 * Attempts to detect a root composer.json config file on every directory, and use it to update. If not, RecitAll goes like before, according the PUBDIR's value.
 
