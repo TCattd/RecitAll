@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#RecitAll v1.0.2
+#RecitAll v1.0.5
 #A simple git/composer script for mass update repositories
 #Info and usage instructions at: https://github.com/TCattd/RecitAll
 #
@@ -11,7 +11,7 @@
 
 #Configuration:
 DIRSPREFIX="/site-" #Directories prefix (slash at the beginning). Will cycle through dirs with a name using that prefix. To cycle through all, use a single forward slash: /
-PUBDIR="" #Public directory inside every repo (no slashes). Leavy empty to NOT cd into a subdirectory for every repo
+PUBDIR="" #Public directory (with composer data) inside every repo (no slashes). Leavy empty to NOT cd into a subdirectory for every repo
 
 #Do not edit below this line!
 
@@ -31,24 +31,31 @@ for D in ./*; do
 	if [ -d "$D" ]; then
 		if([[ "$D" =~ $DIRSPREFIX ]]); then
 
-				if [ -f "$D/composer.json" ]; then
-					#root composer.json found
-					cd "$D"
-				else
-					if [ -z "$PUBDIR" ]; then
-						cd "$D"
-					else
-						cd "$D/$PUBDIR/"
-					fi
-				fi
-
 				echo '### Updating '$D'/ ...';
 
+				#Git?
 				if [ -d "$D/.git/" ]; then
+					git_folder=true
+				else
+					git_folder=false
+				fi
+
+				#Go to dir
+				cd "$D"
+
+				#Initial Git sync
+				if [ "$git_folder" = true ]; then
+					echo -e '### Git initial sync\n\n';
 					git checkout master
 					legit sync
 				fi
 
+				#Pub dir?
+				if [ -n "$PUBDIR" ]; then
+					cd "./$PUBDIR/"
+				fi
+
+				#Composer
 				if [ -f composer.json ]; then
 					composer update
 
@@ -57,7 +64,14 @@ for D in ./*; do
 					fi
 				fi
 
-				if [ -d "$D/.git/" ]; then
+				#Git final sync
+				if [ "$git_folder" = true ]; then
+					echo -e '### Git final sync\n\n';
+
+					if [ -n "$PUBDIR" ]; then
+						cd ..
+					fi
+
 					git add -A
 						if [ ! -z "$COMPOSERSCRIPT" ]; then
 							git commit -m "RecitAll auto-update (run-script $COMPOSERSCRIPT)"
@@ -67,17 +81,9 @@ for D in ./*; do
 					legit sync
 				fi
 
+				#Leave
 				echo -e '### '$D'/ done!\n\n';
-
-				if [ -f "$D/composer.json" ]; then
-					cd ..
-				else
-					if [ -z "$PUBDIR" ]; then
-						cd ..
-					else
-						cd ../..
-					fi
-				fi
+				cd ..
 
 		fi
 	fi
